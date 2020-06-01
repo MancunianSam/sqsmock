@@ -1,8 +1,6 @@
 
 name := "sqsmock"
 
-version := "0.3.3"
-
 organization := "io.findify"
 
 scalaVersion := "2.13.1"
