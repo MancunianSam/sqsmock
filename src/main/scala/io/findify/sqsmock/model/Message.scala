@@ -1,6 +1,6 @@
 package io.findify.sqsmock.model
 
-import java.util.UUID
+import java.util.{Base64, UUID}
 
 
 
@@ -13,6 +13,9 @@ object Message {
   def apply(body:String) = new Message(
     id = UUID.randomUUID.toString,
     body = body,
-    attributes = Map("SentTimestamp" -> System.currentTimeMillis().toString)
+    attributes = Map(
+      "SentTimestamp" -> System.currentTimeMillis().toString,
+      "ReceiptHandle" -> Base64.getEncoder.encodeToString(body.getBytes("UTF-8"))
+    )
   )
 }

@@ -11,7 +11,7 @@ case class ReceivedMessage(handle:String, message:Message)
 
 object ReceivedMessage {
   def apply(msg:Message) = new ReceivedMessage(
-    handle = Base64.getEncoder.encodeToString(Random.nextString(128).getBytes("UTF-8")),
+    handle = Base64.getEncoder.encodeToString(msg.body.getBytes("UTF-8")),
     message = msg
   )
 }
