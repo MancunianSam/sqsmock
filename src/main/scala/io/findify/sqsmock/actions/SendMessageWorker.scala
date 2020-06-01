@@ -13,7 +13,7 @@ import scala.collection.mutable
   */
 class SendMessageWorker(account:Long, queues:mutable.Map[String,QueueCache], system:ActorSystem) extends Worker {
   val log = Logger(this.getClass, "send_message_worker")
-  def process(fields:Map[String,String]) = {
+  def process(fields:Map[String,String]): HttpResponse = {
     val result = for (
       queueUrl <- fields.get("QueueUrl");
       messageBody <- fields.get("MessageBody");

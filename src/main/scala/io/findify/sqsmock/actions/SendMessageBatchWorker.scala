@@ -3,18 +3,19 @@ package io.findify.sqsmock.actions
 import akka.actor.ActorSystem
 import akka.event.slf4j.Logger
 import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
-import io.findify.sqsmock.messages.{ErrorResponse, SendMessageBatchResponse, SendMessageResponse}
-import io.findify.sqsmock.model.{Message, MessageBatchEntry, QueueCache}
+import io.findify.sqsmock.messages.{ErrorResponse, SendMessageBatchResponse}
+import io.findify.sqsmock.model.{MessageBatchEntry, QueueCache}
 
 import scala.collection.mutable
+import scala.util.matching.Regex
 
 /**
   * Created by shutty on 3/30/16.
   */
 class SendMessageBatchWorker(account:Long, queues:mutable.Map[String,QueueCache], system:ActorSystem) extends Worker {
   val log = Logger(this.getClass, "send_message_batch_worker")
-  val fieldFormat = """SendMessageBatchRequestEntry\.([0-9]+)\.([0-9A-Za-z\.]+)""".r
-  def process(fields:Map[String,String]) = {
+  val fieldFormat: Regex = """SendMessageBatchRequestEntry\.([0-9]+)\.([0-9A-Za-z.]+)""".r
+  def process(fields:Map[String,String]): HttpResponse = {
     val result = for (
       queueUrl <- fields.get("QueueUrl");
       queue <- queues.get(queueUrl)

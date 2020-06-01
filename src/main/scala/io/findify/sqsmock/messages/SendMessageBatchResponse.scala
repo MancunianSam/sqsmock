@@ -2,11 +2,13 @@ package io.findify.sqsmock.messages
 
 import io.findify.sqsmock.model.MessageBatchEntry
 
+import scala.xml.Elem
+
 /**
   * Created by shutty on 3/30/16.
   */
 case class SendMessageBatchResponse(entries:List[MessageBatchEntry]) extends Response {
-  def toXML =
+  def toXML: Elem =
     <SendMessageBatchResponse>
       <SendMessageBatchResult>
         {

@@ -13,7 +13,7 @@ import scala.collection.mutable
   */
 class DeleteMessageWorker(account:Long, queues:mutable.Map[String,QueueCache], system:ActorSystem) extends Worker {
   val log = Logger(this.getClass, "delete_message_worker")
-  def process(fields:Map[String,String]) = {
+  def process(fields:Map[String,String]): HttpResponse = {
     val result = for (
       queueUrl <- fields.get("QueueUrl");
       handle <- fields.get("ReceiptHandle");

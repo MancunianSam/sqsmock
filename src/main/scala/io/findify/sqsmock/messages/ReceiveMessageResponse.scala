@@ -5,12 +5,13 @@ import java.util.Base64
 import io.findify.sqsmock.model.{Message, ReceivedMessage}
 
 import scala.util.Random
+import scala.xml.Elem
 
 /**
   * Created by shutty on 3/29/16.
   */
 case class ReceiveMessageResponse(msgs:List[ReceivedMessage]) extends Response {
-  def toXML =
+  def toXML: Elem =
     <ReceiveMessageResponse>
       <ReceiveMessageResult>
         {

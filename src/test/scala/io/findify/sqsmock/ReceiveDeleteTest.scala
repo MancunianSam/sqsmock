@@ -1,24 +1,23 @@
 package io.findify.sqsmock
 
-import com.amazonaws.services.sqs.AmazonSQSClient
 import com.amazonaws.services.sqs.model.CreateQueueRequest
-import org.scalatest.{BeforeAndAfterAll, FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 /**
   * Created by shutty on 3/30/16.
   */
-class ReceiveDeleteTest extends FlatSpec with Matchers with SQSStartStop {
+class ReceiveDeleteTest extends AnyFlatSpec with SQSStartStop {
   "sqs mock" should "receive & delete message" in {
     val queue = "http://localhost:8001/123/foo"
     val cr = new CreateQueueRequest("foo")
-    cr.setAttributes(Map("VisibilityTimeout" -> "1"))
+    cr.setAttributes(Map("VisibilityTimeout" -> "1").asJava)
     client.createQueue(cr)
     client.sendMessage(queue, "hello_world")
     val received = client.receiveMessage(queue)
-    assert(received.getMessages.nonEmpty)
+    assert(received.getMessages.asScala.nonEmpty)
     assert(client.receiveMessage(queue).getMessages.isEmpty)
-    client.deleteMessage(queue, received.getMessages.head.getReceiptHandle)
+    client.deleteMessage(queue, received.getMessages.asScala.head.getReceiptHandle)
     Thread.sleep(2000)
     assert(client.receiveMessage(queue).getMessages.isEmpty)
   }

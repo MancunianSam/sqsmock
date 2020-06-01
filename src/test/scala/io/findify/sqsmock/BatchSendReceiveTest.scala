@@ -1,14 +1,13 @@
 package io.findify.sqsmock
 
-import com.amazonaws.services.sqs.AmazonSQSClient
 import com.amazonaws.services.sqs.model.{ReceiveMessageRequest, SendMessageBatchRequestEntry}
-import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 /**
   * Created by shutty on 3/30/16.
   */
-class BatchSendReceiveTest extends FlatSpec with Matchers with SQSStartStop {
+class BatchSendReceiveTest extends AnyFlatSpec with SQSStartStop {
   val queue = "http://localhost:8001/123/foo"
   "sqs mock" should "send messages in batch" in {
     client.createQueue("foo")
@@ -16,9 +15,9 @@ class BatchSendReceiveTest extends FlatSpec with Matchers with SQSStartStop {
       new SendMessageBatchRequestEntry("1", "hello"),
       new SendMessageBatchRequestEntry("2", "world")
     )
-    val result = client.sendMessageBatch(queue, batch)
+    val result = client.sendMessageBatch(queue, batch.asJava)
     assert(result.getFailed.isEmpty)
-    assert(result.getSuccessful.length == 2)
+    assert(result.getSuccessful.size == 2)
   }
   it should "receive message in batch" in {
     val request = new ReceiveMessageRequest()

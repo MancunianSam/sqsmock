@@ -2,11 +2,13 @@ package io.findify.sqsmock.messages
 
 import java.util.UUID
 
+import scala.xml.Elem
+
 /**
   * Created by shutty on 3/29/16.
   */
 case class ErrorResponse(errorType:String, code:String, message:String) {
-  def toXML =
+  def toXML: Elem =
     <ErrorResponse>
       <Error>
         <Type>{errorType}</Type>

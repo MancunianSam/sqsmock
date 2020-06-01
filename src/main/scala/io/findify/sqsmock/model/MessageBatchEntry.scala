@@ -6,7 +6,7 @@ package io.findify.sqsmock.model
 case class MessageBatchEntry(id:String, message:Message)
 
 object MessageBatchEntry {
-  def apply(fields:Iterable[(Int,String,String)]) = {
+  def apply(fields:Iterable[(Int,String,String)]): Option[MessageBatchEntry] = {
     val attrs = fields.map(f => f._2 -> f._3).toMap
     for (
       id <- attrs.get("Id");

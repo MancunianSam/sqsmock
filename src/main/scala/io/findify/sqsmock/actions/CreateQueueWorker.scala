@@ -4,9 +4,10 @@ import akka.actor.ActorSystem
 import akka.event.slf4j.Logger
 import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import io.findify.sqsmock.messages.{CreateQueueResponse, ErrorResponse}
-import io.findify.sqsmock.model.{Message, Queue, QueueCache}
+import io.findify.sqsmock.model.{Queue, QueueCache}
 
 import scala.collection.mutable
+import scala.util.matching.Regex
 
 /**
   * Created by shutty on 3/29/16.
@@ -15,10 +16,9 @@ class CreateQueueWorker(account:Long, port:Int, queues:mutable.Map[String,QueueC
   val log = Logger(this.getClass, "create_queue_worker")
 
 
-  val attributeFormat = """Attribute\.([0-9])\.([A-Za-z]+)""".r
-  def process(fields:Map[String,String]) = fields.get("QueueName") match {
+  val attributeFormat: Regex = """Attribute\.([0-9])\.([A-Za-z]+)""".r
+  def process(fields:Map[String,String]): HttpResponse = fields.get("QueueName") match {
     case Some(queueName) =>
-      val attrs = attributes(fields)
       val q = Queue(
         account,
         queueName,
@@ -31,18 +31,5 @@ class CreateQueueWorker(account:Long, port:Int, queues:mutable.Map[String,QueueC
     case None =>
       log.warn("missing QueueName parameter, cannot create queue")
       HttpResponse(StatusCodes.BadRequest, entity = ErrorResponse("Sender", "InvalidParameterValue", "no QueueName parameter").toXML.toString())
-  }
-
-  private def attributes(fields:Map[String, String]) = {
-    def nameValue(list:Iterable[(Int,String,String)]) = for (
-      name <- list.find(_._2 == "Name").map(_._3);
-      value <- list.find(_._2 == "Value").map(_._3)
-    ) yield name -> value
-
-    fields.flatMap { case (key, value) => value match {
-      case attributeFormat(id, name) => Some((id.toInt, name, value))
-      case _ => None
-    }}.groupBy(_._1)
-      .flatMap { case (index, values) => nameValue(values)}
   }
 }

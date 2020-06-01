@@ -1,4 +1,3 @@
-logLevel := Level.Warn
-
-addSbtPlugin("me.lessis" % "bintray-sbt" % "0.3.0")
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.10")
+addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.13")
+resolvers += Resolver.jcenterRepo
+addSbtPlugin("ohnosequences" % "sbt-s3-resolver" % "0.19.0")
